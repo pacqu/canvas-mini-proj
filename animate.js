@@ -27,6 +27,7 @@ function asteroid(size, asx, asy, v, angle) {
     this.asy = asy;
     this.v = v;
     this.angle = angle;
+
     this.draw = function(ctx){
       ctx.beginPath();
       ctx.fillStyle = "red";   
@@ -35,13 +36,13 @@ function asteroid(size, asx, asy, v, angle) {
       ctx.closePath();
     }
     this.move = function(){
-      if( this.asx >= c.width )
+      if( this.asx > c.width )
         this.asx = 0; 
-      if( this.asx <= 0 )
+      if( this.asx < 0 )
         this.asx = c.width;
-      if( this.asy >= c.height )
+      if( this.asy > c.height )
         this.asy = 0;
-      if( this.asy <= 0 )
+      if( this.asy < 0 )
         this.asy = c.height;
       this.asx += v * Math.cos(this.angle);
       this.asy += v * Math.sin(this.angle);
@@ -54,7 +55,7 @@ var a1 = new asteroid(3, 100, 100, 1.7, 0.25*Math.PI);
 var mx = 0;
 var my = 0;
 
-var DVD = document.getElementById("dvd");
+var player = document.getElementById("dvd");
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
     a1.move(ctx);
@@ -124,4 +125,4 @@ window.addEventListener('mousemove', function(e){
 });
 
 
-DVD.addEventListener( "click", bounce )
+player.addEventListener( "click", bounce )
