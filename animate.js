@@ -79,9 +79,15 @@ var bounce = function(){
 
     ////
     if (v>5){
-        v = 5;
-    }
-
+        v = 5;}
+    if (usx < 0){
+        usx = c.wdith;} 
+    if (usy < 0){
+        usy = c.height;}
+    if (usx > c.width){
+        usx = 0;}
+    if (usy > c.height){
+        usy = 0;}
     usx += v * Math.cos(angle);
     usy += v * Math.sin(angle);
     if (v>0){
