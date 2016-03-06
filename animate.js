@@ -16,10 +16,39 @@ var x = c.width/3*2;
 var y = c.height/3*2;
 
 //usx = us's x
-var usx = 100;
-var usy = 100;
+var usx = c.width/2;
+var usy = c.height/2;
 var v = 0;
 var angle = 0;
+
+function asteroid(size, asx, asy, v, angle) {
+    this.size = size;
+    this.asx = asx;
+    this.asy = asy;
+    this.v = v;
+    this.angle = angle;
+    this.draw = function(ctx){
+      ctx.beginPath();
+      ctx.fillStyle = "red";   
+      ctx.arc(this.asx, this.asy, this.size * 10 , 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.closePath();
+    }
+    this.move = function(){
+      if( this.asx >= c.width )
+        this.asx = 0; 
+      if( this.asx <= 0 )
+        this.asx = c.width;
+      if( this.asy >= c.height )
+        this.asy = 0;
+      if( this.asy <= 0 )
+        this.asy = c.height;
+      this.asx += v * Math.cos(this.angle);
+      this.asy += v * Math.sin(this.angle);
+    }
+}
+
+var a1 = new asteroid(3, 100, 100, 1.7, 0.25*Math.PI);
 
 //mx = mouse x
 var mx = 0;
@@ -28,6 +57,9 @@ var my = 0;
 var DVD = document.getElementById("dvd");
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
+    a1.move(ctx);
+    a1.draw(ctx);
+    /*
     if ( ((x + 10) > c.width) || ( x < c.width/2 ) ){
         dx *= -1;
     } 
@@ -42,7 +74,9 @@ var bounce = function(){
     ctx.arc( x, y, 10, 0, 2 * Math.PI );
     ctx.stroke();
     ctx.fill();
-    
+    */
+
+
     ////
     if (v>5){
         v = 5;
