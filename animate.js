@@ -1,6 +1,7 @@
-var c= document.getElementById("playground");
+var c = document.getElementById("playground");
 var ctx = c.getContext("2d");
 var requestID;
+var ASTEROIDS = new Array();
 
 var desist = function HALT(){
     window.cancelAnimationFrame( requestID );
@@ -10,8 +11,6 @@ var stop = document.getElementById("stop");
 stop.addEventListener( "click", desist);
 
 //for the enemy circle
-var ex = c.width/3*2;
-var ey = c.height/3*2;
 var alive = true;
 
 //usx = us's x
@@ -23,7 +22,7 @@ var ualive = true;
 
 //shooting;
 var reloaded = true;
-var bx,by,bangle,bv;
+var bx,by,br,bangle,bv;
 
 function asteroid(size, asx, asy, v, angle) {
     this.size = size;
@@ -50,25 +49,33 @@ function asteroid(size, asx, asy, v, angle) {
         this.asy = c.height;
       this.asx += v * Math.cos(this.angle);
       this.asy += v * Math.sin(this.angle);
-      ex = this.asx;
-      ey = this.asy;
+    }
+    this.split = function(){
+	if( this.size > 0 ){
+	    this.size--;
+	    this.v += .2;
+	    ASTEROIDS.push(
+		new asteroid(this.size,this.asx,this.asy,this.v,
+			     this.angle+(Math.random()*Math.PI)-(Math.PI/2)));
+	}	
     }
 }
 
-var a1 = new asteroid(3, 100, 100, 1.7, 0.25*Math.PI);
+ASTEROIDS.push(new asteroid(3, 100, 100, 1.7, 0.25*Math.PI));
 
 //mx = mouse x
 var mx = 0;
 var my = 0;
 
+var i; 
+
 var player = document.getElementById("dvd");
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
-    a1.move(ctx);
-    if (alive){
-        a1.draw(ctx);
+    for( i = 0; i < ASTEROIDS.length; i++ ){
+	ASTEROIDS[i].draw(ctx);
+	ASTEROIDS[i].move(ctx);
     }
- 
     if ( (usx-ex)*(usx-ex) + (usy-ey)*(usy-ey) < 1210 ) {
         ualive = false;
     }
@@ -100,19 +107,26 @@ var bounce = function(){
     if (!reloaded){ //i.e. still flying
         bx += Math.cos(bangle) * bv;
         by += Math.sin(bangle) * bv;
+	br = 5;
         ctx.beginPath();
         ctx.fillStyle = "#000080";   
-        ctx.arc(bx, by, 10 , 0, 2 * Math.PI);
+        ctx.arc(bx, by, br, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
         if ( (bx > c.width) || bx < 0 || by > c.height || by < 0){
             reloaded = true;
-            console.log(true);
         }
-        if ( (bx - ex)*(bx-ex) + (by-ey)*(by-ey) < 1210 ){
-            alive = false;
-            reloaded = true;
-        }
+	for( i = 0; i < ASTEROIDS.length; i++ ){
+	    var ex = ASTEROIDS[i].asx;
+	    var ey = ASTEROIDS[i].asy
+	    var er = ASTEROIDS[i].size*10
+	    if ( (bx-ex)*(bx-ex) + (by-ey)*(by-ey) < (er+br)*(er+br) ){
+		ASTEROIDS[i].split();
+		reloaded = true;
+		break;
+            }
+	}
+        
     }
     requestID = window.requestAnimationFrame( bounce );
 }
