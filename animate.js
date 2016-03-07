@@ -63,10 +63,6 @@ function asteroid(size, asx, asy, v, angle) {
 
 ASTEROIDS.push(new asteroid(3, 100, 100, 1.7, 0.25*Math.PI));
 
-//mx = mouse x
-var mx = 0;
-var my = 0;
-
 var i; 
 
 var player = document.getElementById("dvd");
@@ -85,12 +81,12 @@ function ship(x,y){
 	for (int i = 0; i<ASTROIDS.length; i++){
 	    if ( Math.sqrt( Math.pow(ASTROIDS[i].asx - this.x, 2) + 
 		   Math.pow(ASTROIDS[i].asy - this.y, 2) ) < 120 ){
-		alive = false;
+		this.alive = false;
 	    }
 	}
 	*/
-	this.x += Math.cos(angle)*v;
-	this.y += Math.sin(angle)*v;
+	this.x += Math.cos(this.angle)*this.v;
+	this.y += Math.sin(this.angle)*this.v;
 	if (this.v>5){
 	    this.v=5;
 	} if (this.x<0){
@@ -105,15 +101,20 @@ function ship(x,y){
 	if (alive){
             ctx.beginPath();
             ctx.fillStyle = "#0000ff";   
-            ctx.arc( this.x, this.y, 10, .25*Math.PI +angle, 1.75 * Math.PI + angle );    
+            ctx.arc( this.x, this.y, 10, .25*Math.PI +this.angle, 1.75 * Math.PI + this.angle );    
             ctx.stroke();
             ctx.fill();
             ctx.closePath();
 	}	
+        if (this.cooldown > 0){
+            cooldown--;
+        }
     }
 
     this.shoot = function(){
-
+        if (this.cooldown <= 0){
+            //fire;
+        }
     }
 };
 var bounce = function(){
@@ -123,37 +124,6 @@ var bounce = function(){
 	ASTEROIDS[i].move(ctx);
     }
     PLAYER.move(ctx);
-    /*
-
-    if ( (usx-ex)*(usx-ex) + (usy-ey)*(usy-ey) < 1210 ) {
-        ualive = false;
-    }
-
-    if (v>5){
-        v = 5;}
-    if (usx < 0){
-        usx = c.width;} 
-    if (usy < 0){
-        usy = c.height;}
-    if (usx > c.width){
-        usx = 0;}
-    if (usy > c.height){
-        usy = 0;}
-    usx += v * Math.cos(angle);
-    usy += v * Math.sin(angle);
-    if (v>0){
-        //v-=.005;
-    }
-    
-    if (ualive){
-        ctx.beginPath();
-        ctx.fillStyle = "#0000ff";   
-        ctx.arc( usx, usy, 10, .25*Math.PI +angle, 1.75 * Math.PI + angle );    
-        ctx.stroke();
-        ctx.fill();
-        ctx.closePath();
-    }
-    */
 
     //bullet
     if (!reloaded){ //i.e. still flying
@@ -204,6 +174,7 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
        PLAYER.angle -= .17;
    } if ( e.keyCode == 40 ){
        PLAYER.v -= .1;
+       console.log(PLAYER.v);
    } if ( e.keyCode == 70 || e.keyCode == 32){ //f or space
        PLAYER.shoot();
    }
