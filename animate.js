@@ -15,6 +15,8 @@ var ey = c.height/3*2;
 var alive = true;
 
 //usx = us's x
+var ship = new Image();
+ship.src = "galaga-ship.gif";
 var usx = c.width/2;
 var usy = c.height/2;
 var v = 0;
@@ -25,6 +27,11 @@ var ualive = true;
 var reloaded = true;
 var bx,by,bangle,bv;
 
+
+//asteroid
+var aster = new Image();
+aster.src = "asteroid.png";
+
 function asteroid(size, asx, asy, v, angle) {
     this.size = size;
     this.asx = asx;
@@ -33,10 +40,20 @@ function asteroid(size, asx, asy, v, angle) {
     this.angle = angle;
 
     this.draw = function(ctx){
+      //ctx.fillStyle = "red";   
+      //ctx.arc(this.asx, this.asy, this.size * 10 , 0, 2 * Math.PI);
+      //ctx.fill();
       ctx.beginPath();
-      ctx.fillStyle = "red";   
-      ctx.arc(this.asx, this.asy, this.size * 10 , 0, 2 * Math.PI);
-      ctx.fill();
+      ctx.save();
+      // move to the center of the canvas                                                                                                                                          
+      ctx.translate(asx,asy);
+      // rotate the canvas to the specified degrees                                                                                                                                
+      ctx.rotate(angle);
+      // draw the image                                                                                                                                                            
+      // since the context is rotated, the image will be rotated also                                                                                                              
+      ctx.drawImage(aster,-aster.width/2,-aster.width/2);
+      // we’re done with the rotating so restore the unrotated context                                                                                                             
+      ctx.restore();
       ctx.closePath();
     }
     this.move = function(){
@@ -89,10 +106,16 @@ var bounce = function(){
     }
     if (ualive){
         ctx.beginPath();
-        ctx.fillStyle = "#0000ff";   
-        ctx.arc( usx, usy, 10, .25*Math.PI +angle, 1.75 * Math.PI + angle );    
-        ctx.stroke();
-        ctx.fill();
+	ctx.save();
+	// move to the center of the canvas
+	ctx.translate(usx,usy);
+	// rotate the canvas to the specified degrees
+	ctx.rotate(angle);
+	// draw the image
+	// since the context is rotated, the image will be rotated also
+	ctx.drawImage(ship,-ship.width/2,-ship.width/2);
+	// we’re done with the rotating so restore the unrotated context
+	ctx.restore();
         ctx.closePath();
     }
 
