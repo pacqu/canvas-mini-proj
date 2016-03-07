@@ -62,16 +62,60 @@ var mx = 0;
 var my = 0;
 
 var player = document.getElementById("dvd");
+var PLAYER = new ship(500,250);
+function ship(x,y){
+    this.x = x;
+    this.y = y;
+    this.angle = 0;
+    this.alive = true;
+    this.reloaded = true;
+    this.v=0;
+    this.cooldown = 0;
+        
+    this.move = function(){
+	/*
+	for (int i = 0; i<ASTROIDS.length; i++){
+	    if ( Math.sqrt( Math.pow(ASTROIDS[i].asx - this.x, 2) + 
+		   Math.pow(ASTROIDS[i].asy - this.y, 2) ) < 120 ){
+		alive = false;
+	    }
+	}
+	*/
+	this.x += Math.cos(angle)*v;
+	this.y += Math.sin(angle)*v;
+	if (this.v>5){
+	    this.v=5;
+	} if (this.x<0){
+	    this.x = c.width;
+	} if (this.x>c.width){
+	    this.x = 0;
+	} if (this.y<0){
+	    this.y = c.height;
+	} if (this.y>c.height){
+	    this.y = 0;
+        }
+	if (alive){
+            ctx.beginPath();
+            ctx.fillStyle = "#0000ff";   
+            ctx.arc( this.x, this.y, 10, .25*Math.PI +angle, 1.75 * Math.PI + angle );    
+            ctx.stroke();
+            ctx.fill();
+            ctx.closePath();
+	}	
+    }
+
+    this.shoot = function(){
+
+    }
+};
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
     a1.move(ctx);
     if (alive){
         a1.draw(ctx);
     }
- 
-    if ( (usx-ex)*(usx-ex) + (usy-ey)*(usy-ey) < 1210 ) {
-        ualive = false;
-    }
+    PLAYER.move(ctx);
+    /*
     if (v>5){
         v = 5;}
     if (usx < 0){
@@ -87,6 +131,7 @@ var bounce = function(){
     if (v>0){
         //v-=.005;
     }
+    
     if (ualive){
         ctx.beginPath();
         ctx.fillStyle = "#0000ff";   
@@ -95,6 +140,7 @@ var bounce = function(){
         ctx.fill();
         ctx.closePath();
     }
+    */
 
     //bullet
     if (!reloaded){ //i.e. still flying
@@ -131,15 +177,15 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
    //e.keyCode; 39 == right; 38 == up; 37 == left; 40 == down
    //console.log(e.keyCode);
    if ( e.keyCode == 39 ){
-       angle += .17; //right //radians
+       PLAYER.angle += .17; //right //radians
    } if ( e.keyCode == 38 ){ //up
-       v += .1;
+       PLAYER.v += .1;
    } if ( e.keyCode == 37 ){
-       angle -= .17;
+       PLAYER.angle -= .17;
    } if ( e.keyCode == 40 ){
-       v -= .1;
+       PLAYER.v -= .1;
    } if ( e.keyCode == 70 || e.keyCode == 32){ //f or space
-       shoot();
+       PLAYER.shoot();
    }
 });
 
