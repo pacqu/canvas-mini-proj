@@ -2,7 +2,7 @@ var c = document.getElementById("playground");
 var ctx = c.getContext("2d");
 var requestID;
 var ASTEROIDS = new Array();
-
+var BULLETS = new Array();
 var desist = function HALT(){
     window.cancelAnimationFrame( requestID );
 }    
@@ -75,16 +75,9 @@ function ship(x,y){
     this.reloaded = true;
     this.v=0;
     this.cooldown = 0;
+    this.r = 10;
         
     this.move = function(){
-	/*
-	for (int i = 0; i<ASTROIDS.length; i++){
-	    if ( Math.sqrt( Math.pow(ASTROIDS[i].asx - this.x, 2) + 
-		   Math.pow(ASTROIDS[i].asy - this.y, 2) ) < 120 ){
-		this.alive = false;
-	    }
-	}
-	*/
 	this.x += Math.cos(this.angle)*this.v;
 	this.y += Math.sin(this.angle)*this.v;
 	if (this.v>5){
@@ -98,10 +91,24 @@ function ship(x,y){
 	} if (this.y>c.height){
 	    this.y = 0;
         }
-	if (alive){
+
+        for( var i = 0; i < ASTEROIDS.length; i++ ){
+            var ex = ASTEROIDS[i].asx;
+            var ey = ASTEROIDS[i].asy
+            var er = ASTEROIDS[i].size*10
+            console.log("oh");
+            if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
+
+                alert("You died. HAHA");
+                this.alive = false;                 
+     
+            }
+        }
+
+	if (this.alive){
             ctx.beginPath();
             ctx.fillStyle = "#0000ff";   
-            ctx.arc( this.x, this.y, 10, .25*Math.PI +this.angle, 1.75 * Math.PI + this.angle );    
+            ctx.arc( this.x, this.y, this.r, .25*Math.PI +this.angle, 1.75 * Math.PI + this.angle );    
             ctx.stroke();
             ctx.fill();
             ctx.closePath();
@@ -113,10 +120,43 @@ function ship(x,y){
 
     this.shoot = function(){
         if (this.cooldown <= 0){
-            //fire;
+	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
+            console.log("x is "+this.x);
+            cooldown = 16;
         }
-    }
+    };
 };
+function bullet(x,y,v,angle){
+    this.x = x;
+    this.y = y;
+    this.v = v;
+    this.angle = angle;
+    this.r = 10;
+    console.log(this.x+ " " + x);
+    this.hit = false;
+
+    this.move = function(){
+        this.x += Math.cos(this.angle) * this.v;
+        this.y += Math.sin(this.angle) * this.v;
+        for( var i = 0; i < ASTEROIDS.length; i++ ){
+            var ex = ASTEROIDS[i].asx;
+            var ey = ASTEROIDS[i].asy
+            var er = ASTEROIDS[i].size*10
+            if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
+	        ASTEROIDS[i].split();
+                hit = true;
+	        break;
+            }
+        }
+        ctx.beginPath();
+        ctx.fillStyle = "#000080";   
+        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        
+    };
+}
+
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
     for( i = 0; i < ASTEROIDS.length; i++ ){
@@ -124,44 +164,16 @@ var bounce = function(){
 	ASTEROIDS[i].move(ctx);
     }
     PLAYER.move(ctx);
-
-    //bullet
-    if (!reloaded){ //i.e. still flying
-        bx += Math.cos(bangle) * bv;
-        by += Math.sin(bangle) * bv;
-	br = 5;
-        ctx.beginPath();
-        ctx.fillStyle = "#000080";   
-        ctx.arc(bx, by, br, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
-        if ( (bx > c.width) || bx < 0 || by > c.height || by < 0){
-            reloaded = true;
+    for ( i = 0; i<BULLETS.length; i++){
+        if (BULLETS[i].bx > c.width || BULLETS[i].by > c.height || 
+            BULLETS[i].bx < 0 || BULLETS[i].by < 0 || BULLETS[i].hit ){
+            BULLETS.splice(i,1);
+        } else {
+            BULLETS[i].move(ctx);
         }
-	for( i = 0; i < ASTEROIDS.length; i++ ){
-	    var ex = ASTEROIDS[i].asx;
-	    var ey = ASTEROIDS[i].asy
-	    var er = ASTEROIDS[i].size*10
-	    if ( (bx-ex)*(bx-ex) + (by-ey)*(by-ey) < (er+br)*(er+br) ){
-		ASTEROIDS[i].split();
-		reloaded = true;
-		break;
-            }
-	}
-        
     }
     requestID = window.requestAnimationFrame( bounce );
 }
-
-function shoot(){
-    if (reloaded && ualive){
-        bx = usx;
-        by = usy;
-        bv = 5 +v;
-        bangle = angle;
-        reloaded = false;
-    }
-};
 
 window.addEventListener("keydown", function(e){ //note angle is countercllockwise
    //e.keyCode; 39 == right; 38 == up; 37 == left; 40 == down
@@ -174,9 +186,8 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
        PLAYER.angle -= .17;
    } if ( e.keyCode == 40 ){
        PLAYER.v -= .1;
-       console.log(PLAYER.v);
    } if ( e.keyCode == 70 || e.keyCode == 32){ //f or space
-       PLAYER.shoot();
+       PLAYER.shoot(ctx);
    }
 });
 
