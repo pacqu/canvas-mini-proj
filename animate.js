@@ -101,13 +101,13 @@ function ship(x,y){
     this.move = function(){
     
         if ( keys[39] ){
-            this.angle += .17; //right //radians
+            this.angle += .085; //right //radians
         } if ( keys[38] ){ //up
-            this.v += .1;
+            this.v += .05;
         } if ( keys[37] ){
-            this.angle -= .17;
+            this.angle -= .085;
         } if ( keys[40] ){
-            this.v -= .1;
+            this.v -= .05;
         } if ( keys[70] || keys[32]){ //f or space
             this.shoot(ctx);
         }
@@ -116,7 +116,9 @@ function ship(x,y){
 	this.y += Math.sin(this.angle)*this.v;
 	if (this.v>5){
 	    this.v=5;
-	} if (this.x<0){
+	} if (this.v<-5){
+            this.v=-5;
+        } if (this.x<0){
 	    this.x = c.width;
 	} if (this.x>c.width){
 	    this.x = 0;
