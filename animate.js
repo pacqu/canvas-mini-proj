@@ -11,7 +11,7 @@ var stop = document.getElementById("stop");
 stop.addEventListener( "click", desist);
 
 //for the enemy circle
-var alive = true;
+//var alive = true;
 
 //usx = us's x
 var shp = new Image();
@@ -23,8 +23,8 @@ shp.src = "galaga-ship.gif";
 //var ualive = true;
 
 //shooting;
-var reloaded = true;
-var bx,by,br,bangle,bv;
+//var reloaded = true;
+//var bx,by,br,bangle,bv;
 
 var aster = new Image();
 aster.src = "asteroid.png";
@@ -116,8 +116,7 @@ function ship(x,y){
 		var er = ASTEROIDS[i].size*10;
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
 		    alert("You died. HAHA");
-		    this.alive = false;                 
-		    
+		    this.alive = false;                 		    
 		}
 	    }
 	}
@@ -132,15 +131,15 @@ function ship(x,y){
             ctx.closePath();
 	}	
         if (this.cooldown > 0){
-            cooldown--;
+            this.cooldown--;
         }
     }
 
     this.shoot = function(){
         if (this.cooldown <= 0){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
-            console.log("x is "+this.x);
-            cooldown = 16;
+            //console.log("x is "+this.x);
+            this.cooldown = 16;
         }
     };
 };
@@ -158,12 +157,15 @@ function bullet(x,y,v,angle){
         this.y += Math.sin(this.angle) * this.v;
         for( var i = 0; i < ASTEROIDS.length; i++ ){
             var ex = ASTEROIDS[i].asx;
-            var ey = ASTEROIDS[i].asy;
+            var ey = ASTEROIDS[i].asy
             var er = ASTEROIDS[i].size*15;
             if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
-                ASTEROIDS[i].split();
-                hit = true;
-	              break;
+              ASTEROIDS[i].split();
+              this.hit = true;
+              if (this.hit){
+                  console.log("hitted");
+              }
+              break;
             }
         }
         ctx.beginPath();
