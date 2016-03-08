@@ -29,6 +29,16 @@ var bx,by,br,bangle,bv;
 var aster = new Image();
 aster.src = "asteroid.png";
 
+var back = new Image();
+back.src = "space.png";
+
+back.onload = function(){
+    ctx.drawImage(back,0,0,1000,500);   
+};
+
+var laser = new Image();
+laser.src = "laser.png";
+
 function asteroid(size, asx, asy, v, angle) {
     this.size = size;
     this.asx = asx;
@@ -94,14 +104,13 @@ function ship(x,y){
 	} if (this.y>c.height){
 	    this.y = 0;
         }
-
+	
         for( var i = 0; i < ASTEROIDS.length; i++ ){
             var ex = ASTEROIDS[i].asx;
-            var ey = ASTEROIDS[i].asy
-            var er = ASTEROIDS[i].size*10
+            var ey = ASTEROIDS[i].asy;
+            var er = ASTEROIDS[i].size*10;
             console.log("oh");
             if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
-
                 alert("You died. HAHA");
                 this.alive = false;                 
      
@@ -135,7 +144,7 @@ function bullet(x,y,v,angle){
     this.y = y;
     this.v = v;
     this.angle = angle;
-    this.r = 10;
+    this.r = 20;
     console.log(this.x+ " " + x);
     this.hit = false;
 
@@ -153,16 +162,19 @@ function bullet(x,y,v,angle){
             }
         }
         ctx.beginPath();
-        ctx.fillStyle = "#000080";   
-        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
+	ctx.save();
+	ctx.translate(this.x,this.y);
+	ctx.rotate(this.angle);
+	ctx.drawImage(laser,-laser.width/2,-laser.width/2);
+	ctx.restore();
+	ctx.closePath();
         
     };
 }
 
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
+    ctx.drawImage(back,0,0,1000,500);   
     for( i = 0; i < ASTEROIDS.length; i++ ){
 	ASTEROIDS[i].draw(ctx);
 	ASTEROIDS[i].move(ctx);
