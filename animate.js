@@ -14,6 +14,8 @@ stop.addEventListener( "click", desist);
 var alive = true;
 
 //usx = us's x
+var shp = new Image();
+shp.src = "galaga-ship.gif";
 var usx = c.width/2;
 var usy = c.height/2;
 var v = 0;
@@ -107,10 +109,11 @@ function ship(x,y){
 
 	if (this.alive){
             ctx.beginPath();
-            ctx.fillStyle = "#0000ff";   
-            ctx.arc( this.x, this.y, this.r, .25*Math.PI +this.angle, 1.75 * Math.PI + this.angle );    
-            ctx.stroke();
-            ctx.fill();
+	    ctx.save();
+	    ctx.translate(this.x,this.y);
+	    ctx.rotate(this.angle);
+	    ctx.drawImage(shp,-shp.width/2,-shp.width/2);
+	    ctx.restore();
             ctx.closePath();
 	}	
         if (this.cooldown > 0){
