@@ -3,11 +3,18 @@ var ctx = c.getContext("2d");
 var requestID;
 var ASTEROIDS = new Array();
 var BULLETS = new Array();
-var desist = function HALT(){
-    window.cancelAnimationFrame( requestID );
-}    
+
+var player = document.getElementById("dvd");
+var PLAYER = new ship(500,250);
 
 var stop = document.getElementById("stop");
+
+var desist = function HALT(){
+    window.cancelAnimationFrame( requestID );
+    player.style.display = "initial";
+    stop.style.display = "none";
+}    
+
 stop.addEventListener( "click", desist);
 
 //for the enemy circle
@@ -83,8 +90,6 @@ ASTEROIDS.push(new asteroid(3, 800, 300, 1.3, 0.75*Math.PI));
 
 var i; 
 
-var player = document.getElementById("dvd");
-var PLAYER = new ship(500,250);
 function ship(x,y){
     this.x = x;
     this.y = y;
@@ -196,6 +201,8 @@ var bounce = function(){
         }
     }
     requestID = window.requestAnimationFrame( bounce );
+    player.style.display = "none";
+    stop.style.display = "initial";
 }
 
 window.addEventListener("keydown", function(e){ //note angle is countercllockwise
