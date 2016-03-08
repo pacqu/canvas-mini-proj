@@ -70,8 +70,11 @@ function asteroid(size, asx, asy, v, angle) {
 	    ASTEROIDS.push(
 		new asteroid(this.size,this.asx,this.asy,this.v,
 			     this.angle+(Math.random()*Math.PI)-(Math.PI/2)));
-	}	
-    }
+    }else{
+      console.log("asteroid popped");
+      ASTEROIDS.splice(ASTEROIDS.indexOf(this),1);
+    }	
+  }
 }
 
 ASTEROIDS.push(new asteroid(3, 100, 100, 1.7, 0.25*Math.PI));
@@ -111,7 +114,6 @@ function ship(x,y){
 		var ex = ASTEROIDS[i].asx;
 		var ey = ASTEROIDS[i].asy;
 		var er = ASTEROIDS[i].size*10;
-		console.log("oh");
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
 		    alert("You died. HAHA");
 		    this.alive = false;                 
@@ -159,7 +161,7 @@ function bullet(x,y,v,angle){
             var ey = ASTEROIDS[i].asy;
             var er = ASTEROIDS[i].size*15;
             if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
-	        ASTEROIDS[i].split();
+                ASTEROIDS[i].split();
                 hit = true;
 	              break;
             }
