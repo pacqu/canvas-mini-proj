@@ -16,11 +16,11 @@ var alive = true;
 //usx = us's x
 var shp = new Image();
 shp.src = "galaga-ship.gif";
-var usx = c.width/2;
-var usy = c.height/2;
-var v = 0;
-var angle = 0;
-var ualive = true;
+//var usx = c.width/2;
+//var usy = c.height/2;
+//var v = 0;
+//var angle = 0;
+//var ualive = true;
 
 //shooting;
 var reloaded = true;
@@ -106,7 +106,7 @@ function ship(x,y){
 	} if (this.y>c.height){
 	    this.y = 0;
         }
-	if (ASTEROIDS.length < 0){
+	if (ASTEROIDS.length > 0){
 	    for( var i = 0; i < ASTEROIDS.length; i++ ){
 		var ex = ASTEROIDS[i].asx;
 		var ey = ASTEROIDS[i].asy;
