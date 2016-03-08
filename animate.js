@@ -3,6 +3,9 @@ var ctx = c.getContext("2d");
 var requestID;
 var ASTEROIDS = new Array();
 var BULLETS = new Array();
+
+var keys = [];
+
 var desist = function HALT(){
     window.cancelAnimationFrame( requestID );
 }    
@@ -64,7 +67,7 @@ function asteroid(size, asx, asy, v, angle) {
       this.asy += v * Math.sin(this.angle);
     }
     this.split = function(){
-	if( this.size > 0 ){
+	if( this.size > 1 ){
 	    this.size--;
 	    this.v += .2;
 	    ASTEROIDS.push(
@@ -96,6 +99,19 @@ function ship(x,y){
     this.r = 10;
         
     this.move = function(){
+    
+        if ( keys[39] ){
+            this.angle += .17; //right //radians
+        } if ( keys[38] ){ //up
+            this.v += .1;
+        } if ( keys[37] ){
+            this.angle -= .17;
+        } if ( keys[40] ){
+            this.v -= .1;
+        } if ( keys[70] || keys[32]){ //f or space
+            this.shoot(ctx);
+        }
+
 	this.x += Math.cos(this.angle)*this.v;
 	this.y += Math.sin(this.angle)*this.v;
 	if (this.v>5){
@@ -136,7 +152,7 @@ function ship(x,y){
     }
 
     this.shoot = function(){
-        if (this.cooldown <= 0){
+        if (this.cooldown <= 0 && this.alive){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
             //console.log("x is "+this.x);
             this.cooldown = 16;
@@ -198,9 +214,19 @@ var bounce = function(){
     requestID = window.requestAnimationFrame( bounce );
 }
 
+window.addEventListener("keyup", function(e){ //note angle is countercllockwise
+    //console.log(keys);
+    keys[e.keyCode] = false;
+});
+
+
+
 window.addEventListener("keydown", function(e){ //note angle is countercllockwise
    //e.keyCode; 39 == right; 38 == up; 37 == left; 40 == down
    //console.log(e.keyCode);
+   keys[e.keyCode] = true;
+   /*
+   
    if ( e.keyCode == 39 ){
        PLAYER.angle += .17; //right //radians
    } if ( e.keyCode == 38 ){ //up
@@ -212,6 +238,8 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
    } if ( e.keyCode == 70 || e.keyCode == 32){ //f or space
        PLAYER.shoot(ctx);
    }
+*/
 });
+
 
 player.addEventListener( "click", bounce )
