@@ -75,6 +75,8 @@ function asteroid(size, asx, asy, v, angle) {
 }
 
 ASTEROIDS.push(new asteroid(3, 100, 100, 1.7, 0.25*Math.PI));
+ASTEROIDS.push(new asteroid(3, 400, 70, 1.5, 1.25*Math.PI));
+ASTEROIDS.push(new asteroid(3, 800, 300, 1.3, 0.75*Math.PI));
 
 var i; 
 
@@ -145,7 +147,7 @@ function bullet(x,y,v,angle){
     this.y = y;
     this.v = v;
     this.angle = angle;
-    this.r = 20;
+    this.r = 5;
     console.log(this.x+ " " + x);
     this.hit = false;
 
@@ -159,7 +161,7 @@ function bullet(x,y,v,angle){
             if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
 	        ASTEROIDS[i].split();
                 hit = true;
-	        break;
+	              break;
             }
         }
         ctx.beginPath();
