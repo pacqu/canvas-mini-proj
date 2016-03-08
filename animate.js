@@ -104,18 +104,19 @@ function ship(x,y){
 	} if (this.y>c.height){
 	    this.y = 0;
         }
-	
-        for( var i = 0; i < ASTEROIDS.length; i++ ){
-            var ex = ASTEROIDS[i].asx;
-            var ey = ASTEROIDS[i].asy;
-            var er = ASTEROIDS[i].size*10;
-            console.log("oh");
-            if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
-                alert("You died. HAHA");
-                this.alive = false;                 
-     
-            }
-        }
+	if (ASTEROIDS.length < 0){
+	    for( var i = 0; i < ASTEROIDS.length; i++ ){
+		var ex = ASTEROIDS[i].asx;
+		var ey = ASTEROIDS[i].asy;
+		var er = ASTEROIDS[i].size*10;
+		console.log("oh");
+		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
+		    alert("You died. HAHA");
+		    this.alive = false;                 
+		    
+		}
+	    }
+	}
 
 	if (this.alive){
             ctx.beginPath();
