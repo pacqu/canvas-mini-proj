@@ -134,7 +134,7 @@ function ship(x,y){
     this.shoot = function(){
         if (this.cooldown <= 0){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
-            console.log("x is "+this.x);
+            //console.log("x is "+this.x);
             this.cooldown = 16;
         }
     };
@@ -145,7 +145,7 @@ function bullet(x,y,v,angle){
     this.v = v;
     this.angle = angle;
     this.r = 20;
-    console.log(this.x+ " " + x);
+    //console.log(this.x+ " " + x);
     this.hit = false;
 
     this.move = function(){
@@ -154,10 +154,13 @@ function bullet(x,y,v,angle){
         for( var i = 0; i < ASTEROIDS.length; i++ ){
             var ex = ASTEROIDS[i].asx;
             var ey = ASTEROIDS[i].asy
-            var er = ASTEROIDS[i].size*10
+            var er = ASTEROIDS[i].size*10;
             if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
 	        ASTEROIDS[i].split();
                 this.hit = true;
+                if (this.hit){
+                    console.log("hitted");
+                }
 	        break;
             }
         }
