@@ -11,7 +11,7 @@ var stop = document.getElementById("stop");
 stop.addEventListener( "click", desist);
 
 //for the enemy circle
-var alive = true;
+//var alive = true;
 
 //usx = us's x
 var shp = new Image();
@@ -23,8 +23,8 @@ shp.src = "galaga-ship.gif";
 //var ualive = true;
 
 //shooting;
-var reloaded = true;
-var bx,by,br,bangle,bv;
+//var reloaded = true;
+//var bx,by,br,bangle,bv;
 
 var aster = new Image();
 aster.src = "asteroid.png";
@@ -112,8 +112,7 @@ function ship(x,y){
 		console.log("oh");
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
 		    alert("You died. HAHA");
-		    this.alive = false;                 
-		    
+		    this.alive = false;                 		    
 		}
 	    }
 	}
@@ -128,7 +127,7 @@ function ship(x,y){
             ctx.closePath();
 	}	
         if (this.cooldown > 0){
-            cooldown--;
+            this.cooldown--;
         }
     }
 
@@ -136,7 +135,7 @@ function ship(x,y){
         if (this.cooldown <= 0){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
             console.log("x is "+this.x);
-            cooldown = 16;
+            this.cooldown = 16;
         }
     };
 };
