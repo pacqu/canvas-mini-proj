@@ -48,7 +48,7 @@ function asteroid(size, asx, asy, v, angle) {
 
     this.draw = function(ctx){
       ctx.beginPath();
-      ctx.drawImage(aster, this.asx, this.asy, this.size * 30, this.size * 30);
+      ctx.drawImage(aster, this.asx-(this.size*15), this.asy-(this.size*15), this.size * 30, this.size * 30);
       ctx.closePath();
     }
     this.move = function(){
@@ -156,8 +156,8 @@ function bullet(x,y,v,angle){
         this.y += Math.sin(this.angle) * this.v;
         for( var i = 0; i < ASTEROIDS.length; i++ ){
             var ex = ASTEROIDS[i].asx;
-            var ey = ASTEROIDS[i].asy
-            var er = ASTEROIDS[i].size*10
+            var ey = ASTEROIDS[i].asy;
+            var er = ASTEROIDS[i].size*15;
             if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
 	        ASTEROIDS[i].split();
                 hit = true;
@@ -179,8 +179,8 @@ var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
     ctx.drawImage(back,0,0,1000,500);   
     for( i = 0; i < ASTEROIDS.length; i++ ){
-	ASTEROIDS[i].draw(ctx);
-	ASTEROIDS[i].move(ctx);
+      ASTEROIDS[i].draw(ctx);
+      ASTEROIDS[i].move(ctx);
     }
     PLAYER.move(ctx);
     for ( i = 0; i<BULLETS.length; i++){
