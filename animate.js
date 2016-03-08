@@ -26,6 +26,9 @@ var ualive = true;
 var reloaded = true;
 var bx,by,br,bangle,bv;
 
+var aster = new Image();
+aster.src = "asteroid.png";
+
 function asteroid(size, asx, asy, v, angle) {
     this.size = size;
     this.asx = asx;
@@ -35,9 +38,7 @@ function asteroid(size, asx, asy, v, angle) {
 
     this.draw = function(ctx){
       ctx.beginPath();
-      ctx.fillStyle = "red";   
-      ctx.arc(this.asx, this.asy, this.size * 10 , 0, 2 * Math.PI);
-      ctx.fill();
+      ctx.drawImage(aster, this.asx, this.asy, this.size * 30, this.size * 30);
       ctx.closePath();
     }
     this.move = function(){
