@@ -4,10 +4,11 @@ var requestID;
 var ASTEROIDS = new Array();
 var BULLETS = new Array();
 var level = 0;
+var mute = false;
 
 var LASER = new Audio("laser.wav"); // buffers automatically when created
 
-var player = document.getElementById("dvd");
+var player = document.getElementById("play");
 var PLAYER = new ship(500,250);
 
 var stop = document.getElementById("stop");
@@ -189,7 +190,9 @@ function ship(x,y){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
             //console.log("x is "+this.x);
             this.cooldown = 30;
-            LASER.play();
+            if(!mute){
+		LASER.play();
+	    }
 
         }
     };
@@ -265,3 +268,8 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
 });
 
 player.addEventListener( "click", bounce )
+
+var soundless = document.getElementById("mute");
+soundless.addEventListener( "click", function(){
+    mute = !mute;
+});
