@@ -5,6 +5,8 @@ var ASTEROIDS = new Array();
 var BULLETS = new Array();
 var level = 0;
 
+var LASER = new Audio("laser.wav"); // buffers automatically when created
+
 var player = document.getElementById("dvd");
 var PLAYER = new ship(500,250);
 
@@ -186,7 +188,9 @@ function ship(x,y){
         if (this.cooldown <= 0 && this.alive){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
             //console.log("x is "+this.x);
-            this.cooldown = 16;
+            this.cooldown = 30;
+            LASER.play();
+
         }
     };
 };
