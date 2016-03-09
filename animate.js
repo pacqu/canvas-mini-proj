@@ -3,6 +3,7 @@ var ctx = c.getContext("2d");
 var requestID;
 var ASTEROIDS = new Array();
 var BULLETS = new Array();
+var level = 0;
 
 var player = document.getElementById("dvd");
 var PLAYER = new ship(500,250);
@@ -10,7 +11,29 @@ var PLAYER = new ship(500,250);
 var stop = document.getElementById("stop");
 var keys = [];
 
-
+function init(){
+    desist;
+    keys = [];
+    var i = 0;
+    while (i<ASTEROIDS.length){
+        ASTEROIDS.splice(i,1);
+    };
+    while (i<BULLETS.length){
+        BULLETS.splice(i,1);
+    };
+    PLAYER.alive = true;
+    ASTEROIDS.push(new asteroid(3, 100 + Math.random()*100, 100 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
+    ASTEROIDS.push(new asteroid(3, 400 + Math.random()*100, 70 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
+    ASTEROIDS.push(new asteroid(3, 800 + Math.random()*100, 300 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
+    PLAYER.v = 0;
+    PLAYER.angle = 0;
+    PLAYER.x = 500;
+    PLAYER.y = 250;
+    PLAYER.invinc = 64;
+    level = 0;    
+    bounce;
+};
+    
 var desist = function HALT(){
     window.cancelAnimationFrame( requestID );
     player.style.display = "initial";
@@ -19,21 +42,8 @@ var desist = function HALT(){
 
 stop.addEventListener( "click", desist);
 
-//for the enemy circle
-//var alive = true;
-
-//usx = us's x
 var shp = new Image();
 shp.src = "galaga-ship.gif";
-//var usx = c.width/2;
-//var usy = c.height/2;
-//var v = 0;
-//var angle = 0;
-//var ualive = true;
-
-//shooting;
-//var reloaded = true;
-//var bx,by,br,bangle,bv;
 
 var aster = new Image();
 aster.src = "asteroid.png";
@@ -90,9 +100,9 @@ ASTEROIDS.push(new asteroid(3, 100, 100, 1.7, 0.25*Math.PI));
 ASTEROIDS.push(new asteroid(3, 400, 70, 1.5, 1.25*Math.PI));
 ASTEROIDS.push(new asteroid(3, 800, 300, 1.3, 0.75*Math.PI));
 
-var i; 
-
+var i;
 function ship(x,y){
+    this.invinc = 64;
     this.x = x;
     this.y = y;
     this.angle = 0;
@@ -136,14 +146,26 @@ function ship(x,y){
 		var ex = ASTEROIDS[i].asx;
 		var ey = ASTEROIDS[i].asy;
 		var er = ASTEROIDS[i].size*10;
-		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive){
+		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive && this.invinc < 1){
 		    alert("You died. HAHA");
 		    this.alive = false;                 		    
 		}
 	    }
 	}
-
-	if (this.alive){
+        if (ASTEROIDS.length == 0){ 
+            level+=1;
+            ASTEROIDS.push(
+		new asteroid(3, (this.x + c.width * Math.random() + c.width / 2) % c.width, (this.y + c.height * Math.random()+ c.height / 2) % c.height, 
+                            (Math.random() * 10) % 2 + level, (Math.random()*Math.PI*2)) );
+            ASTEROIDS.push(
+		new asteroid(3, (this.x + c.width * Math.random() + c.width / 2) % c.width, (this.y + c.height * Math.random() + c.height / 2) % c.height, 
+                            (Math.random() * 10) % 2 + level, (Math.random()*Math.PI*2)) );
+            ASTEROIDS.push(
+		new asteroid(3, (this.x + c.width * Math.random() + c.width / 2) % c.width, (this.y + c.height * Math.random() + c.height / 2) % c.height, 
+                            (Math.random() * 10) % 2 + level, (Math.random()*Math.PI*2)) );
+            this.invinc = 32;
+        }
+	if (this.alive && this.invinc % 2 == 0){
             ctx.beginPath();
 	    ctx.save();
 	    ctx.translate(this.x,this.y);
@@ -154,6 +176,9 @@ function ship(x,y){
 	}	
         if (this.cooldown > 0){
             this.cooldown--;
+        }
+        if (this.invinc > 0){
+            this.invinc--;
         }
     }
 
@@ -168,7 +193,7 @@ function ship(x,y){
 function bullet(x,y,v,angle){
     this.x = x;
     this.y = y;
-    this.v = v;
+    this.v = v+level;
     this.angle = angle;
     this.r = 5;
     console.log(this.x+ " " + x);
@@ -217,37 +242,22 @@ var bounce = function(){
             BULLETS[i].move(ctx);
         }
     }
+    if (!PLAYER.alive){
+        var start = new init();
+    }
     requestID = window.requestAnimationFrame( bounce );
     player.style.display = "none";
     stop.style.display = "initial";
+   
 }
 
 window.addEventListener("keyup", function(e){ //note angle is countercllockwise
-    //console.log(keys);
     keys[e.keyCode] = false;
 });
 
-
-
 window.addEventListener("keydown", function(e){ //note angle is countercllockwise
    //e.keyCode; 39 == right; 38 == up; 37 == left; 40 == down
-   //console.log(e.keyCode);
    keys[e.keyCode] = true;
-   /*
-   
-   if ( e.keyCode == 39 ){
-       PLAYER.angle += .17; //right //radians
-   } if ( e.keyCode == 38 ){ //up
-       PLAYER.v += .1;
-   } if ( e.keyCode == 37 ){
-       PLAYER.angle -= .17;
-   } if ( e.keyCode == 40 ){
-       PLAYER.v -= .1;
-   } if ( e.keyCode == 70 || e.keyCode == 32){ //f or space
-       PLAYER.shoot(ctx);
-   }
-*/
 });
-
 
 player.addEventListener( "click", bounce )
