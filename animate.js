@@ -1,40 +1,43 @@
 var c = document.getElementById("playground");
 var ctx = c.getContext("2d");
 var requestID;
-var ASTEROIDS = new Array();
-var BULLETS = new Array();
-var level = 0;
-var mute = false;
+var ASTEROIDS;
+var BULLETS;
+var level;
+var mute;
 
 var LASER = new Audio("laser.wav"); // buffers automatically when created
 
 var player = document.getElementById("play");
-var PLAYER = new ship(500,250);
+var PLAYER;
 
 var stop = document.getElementById("stop");
-var keys = [];
+var keys;
 
 function init(){
     desist;
+
+//    ctx.clearRect( 0, 0, c.width, c.height );
+//    ctx.drawImage(back,0,0,1000,500);
+
     keys = [];
-    var i = 0;
-    while (i<ASTEROIDS.length){
-        ASTEROIDS.splice(i,1);
-    };
-    while (i<BULLETS.length){
-        BULLETS.splice(i,1);
-    };
-    PLAYER.alive = true;
+    ASTEROIDS = new Array();
+    BULLETS = new Array();
+    PLAYER = new ship(500,250);
+
+    //change this to true random l8r
     ASTEROIDS.push(new asteroid(3, 100 + Math.random()*100, 100 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
     ASTEROIDS.push(new asteroid(3, 400 + Math.random()*100, 70 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
     ASTEROIDS.push(new asteroid(3, 800 + Math.random()*100, 300 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
+    
+    PLAYER.alive = true;
     PLAYER.v = 0;
     PLAYER.angle = 0;
     PLAYER.x = 500;
     PLAYER.y = 250;
     PLAYER.invinc = 64;
-    level = 0;    
-    bounce;
+    level = 0;
+    mute = false;
 };
     
 var desist = function HALT(){
@@ -98,10 +101,6 @@ function asteroid(size, asx, asy, v, angle) {
     }	
   }
 }
-
-ASTEROIDS.push(new asteroid(3, 100, 100, 1.7, 0.25*Math.PI));
-ASTEROIDS.push(new asteroid(3, 400, 70, 1.5, 1.25*Math.PI));
-ASTEROIDS.push(new asteroid(3, 800, 300, 1.3, 0.75*Math.PI));
 
 var i;
 function ship(x,y){
@@ -235,7 +234,7 @@ function bullet(x,y,v,angle){
 
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
-    ctx.drawImage(back,0,0,1000,500);   
+    ctx.drawImage(back,0,0,1000,500);
     for( i = 0; i < ASTEROIDS.length; i++ ){
       ASTEROIDS[i].draw(ctx);
       ASTEROIDS[i].move(ctx);
@@ -248,9 +247,6 @@ var bounce = function(){
         } else {
             BULLETS[i].move(ctx);
         }
-    }
-    if (!PLAYER.alive){
-        var start = new init();
     }
     requestID = window.requestAnimationFrame( bounce );
     player.style.display = "none";
@@ -273,3 +269,5 @@ var soundless = document.getElementById("mute");
 soundless.addEventListener( "click", function(){
     mute = !mute;
 });
+
+init();
