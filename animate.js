@@ -172,14 +172,8 @@ function ship(x,y){
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive && this.invinc < 1){
 		    //alert("You Died! Play Again?");
 		    this.alive = false;
-		    ctx.clearRect( 0, 0, c.width, c.height );
-		    ctx.drawImage(back,0,0,1000,500);
-		    ctx.fontStyle = "100px sans serif";
-		    ctx.fillText("You Died!", 350, 275);
-		    window.cancelAnimationFrame( requestID );
-		    return;
 		}
-	    }
+        }
 	}
         if (ASTEROIDS.length == 0){ 
             level+=1;
@@ -237,6 +231,7 @@ function ship(x,y){
         }
     };
 };
+
 function bullet(x,y,v,angle){
     this.x = x;
     this.y = y;
@@ -275,6 +270,15 @@ function bullet(x,y,v,angle){
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
     ctx.drawImage(back,0,0,1000,500);
+    if( !PLAYER.alive ){
+        ctx.clearRect( 0, 0, c.width, c.height );
+        ctx.drawImage(back,0,0,1000,500);
+        ctx.fontStyle = "100px sans serif";
+        ctx.fillText("You Died!", 350, 275);
+        ctx.fillText("Press Enter to Play Again", 350, 325);
+        halt();
+        return;
+    }
     for( i = 0; i < ASTEROIDS.length; i++ ){
       ASTEROIDS[i].draw(ctx);
       ASTEROIDS[i].move(ctx);
@@ -301,6 +305,10 @@ window.addEventListener("keyup", function(e){ //note angle is countercllockwise
     }
     if (e.keyCode == 67){
         PLAYER.evaR = true;
+    }
+    if (e.keyCode == 13){
+        init();
+        bounce();
     }
 });
 
