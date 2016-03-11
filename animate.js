@@ -150,7 +150,8 @@ function ship(x,y){
 		var er = ASTEROIDS[i].size*10;
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive && this.invinc < 1){
 		    alert("You died. HAHA");
-		    this.alive = false;                 		    
+		    this.alive = false; 
+                    init();                		    
 		}
 	    }
 	}
