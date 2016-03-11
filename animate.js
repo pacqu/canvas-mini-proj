@@ -72,9 +72,9 @@ back.onload = function(){
     ctx.drawImage(back,0,0,1000,500);
     ctx.font="100px sans serif";
     ctx.fillStyle="white";
-    ctx.fillText("Asteroids", 325, 260);
+    ctx.fillText("Asteroids", 305, 260);
     ctx.font="30px sans serif";
-    ctx.fillText("A Golden Astro Gunslingers Production", 275, 310);
+    ctx.fillText("A Golden Astro Gunslingers Production", 255, 310);
 };
 
 var laser = new Image();
@@ -273,9 +273,10 @@ var bounce = function(){
     if( !PLAYER.alive ){
         ctx.clearRect( 0, 0, c.width, c.height );
         ctx.drawImage(back,0,0,1000,500);
-        ctx.fontStyle = "100px sans serif";
-        ctx.fillText("You Died!", 350, 275);
-        ctx.fillText("Press Enter to Play Again", 350, 325);
+        ctx.font = "100px sans serif";
+        ctx.fillText("You Died!", 290, 255);
+        ctx.font = "30px sans serif";
+	ctx.fillText("Press Enter to Play Again", 340, 325);
         halt();
         return;
     }
