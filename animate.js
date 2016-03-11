@@ -60,11 +60,19 @@ var back = new Image();
 back.src = "space.png";
 
 back.onload = function(){
-    ctx.drawImage(back,0,0,1000,500);   
+    ctx.drawImage(back,0,0,1000,500);
+    ctx.font="100px sans serif";
+    ctx.fillStyle="white";
+    ctx.fillText("Asteroids", 325, 260);
+    ctx.font="30px sans serif";
+    ctx.fillText("A Golden Astro Gunslingers Production", 275, 310);
 };
 
 var laser = new Image();
 laser.src = "laser.png";
+
+var soundless = document.getElementById("mute");
+var sounder = document.getElementById("unmute");
 
 function asteroid(size, asx, asy, v, angle) {
     this.size = size;
@@ -269,8 +277,7 @@ var bounce = function(){
     requestID = window.requestAnimationFrame( bounce );
     player.style.display = "none";
     stop.style.display = "initial";
-   
-}
+};
 
 window.addEventListener("keyup", function(e){ //note angle is countercllockwise
     keys[e.keyCode] = false;
@@ -288,11 +295,20 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
    keys[e.keyCode] = true;
 });
 
-player.addEventListener( "click", bounce )
+player.addEventListener( "click", bounce );
 
-var soundless = document.getElementById("mute");
 soundless.addEventListener( "click", function(){
     mute = !mute;
-});
+    soundless.style.display = "none";
+    console.log("why");
+    yes = sounder.style.display = "initial";
+    console.log(yes);
+    });
+
+sounder.addEventListener( "click", function(){
+	mute = !mute;
+	soundless.style.display = "initial";
+	sounder.style.display = "none";
+    });
 
 init();
