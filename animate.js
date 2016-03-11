@@ -37,6 +37,8 @@ function init(){
     PLAYER.x = 500;
     PLAYER.y = 250;
     PLAYER.invinc = 64;
+    PLAYER.evaL = false;
+    PLAYER.evaR = false;
     level = 0;
     //mute = false;
 };
@@ -59,11 +61,19 @@ var back = new Image();
 back.src = "space.png";
 
 back.onload = function(){
-    ctx.drawImage(back,0,0,1000,500);   
+    ctx.drawImage(back,0,0,1000,500);
+    ctx.font="100px sans serif";
+    ctx.fillStyle="white";
+    ctx.fillText("Asteroids", 325, 260);
+    ctx.font="30px sans serif";
+    ctx.fillText("A Golden Astro Gunslingers Production", 275, 310);
 };
 
 var laser = new Image();
 laser.src = "laser.png";
+
+var soundless = document.getElementById("mute");
+var sounder = document.getElementById("unmute");
 
 function asteroid(size, asx, asy, v, angle) {
     this.size = size;
@@ -114,9 +124,11 @@ function ship(x,y){
     this.v=0;
     this.cooldown = 0;
     this.r = 10;
+    this.evaL = false;
+    this.evaR = false;
         
     this.move = function(){
-    
+     
         if ( keys[39] ){
             this.angle += .085; //right //radians
         } if ( keys[38] ){ //up
@@ -177,7 +189,20 @@ function ship(x,y){
 	    ctx.drawImage(shp,-shp.width/2,-shp.width/2);
 	    ctx.restore();
             ctx.closePath();
-	}	
+	}
+        if (this.alive && (this.evaL || this.evaR)){
+            if (this.evaL == true){
+                this.x += 50*Math.sin(this.angle);
+                this.y -= 50*Math.cos(this.angle);
+                console.log(this.x);
+                this.evaL = false;
+            }
+            if (this.evaR == true){
+                this.y += 100*Math.cos(this.angle);
+                this.x -= 100*Math.sin(this.angle);
+                this.evaR = false;
+            }
+        }	
         if (this.cooldown > 0){
             this.cooldown--;
         }
@@ -253,11 +278,17 @@ var bounce = function(){
     requestID = window.requestAnimationFrame( bounce );
     player.style.display = "none";
     stop.style.display = "initial";
-   
-}
+};
 
 window.addEventListener("keyup", function(e){ //note angle is countercllockwise
     keys[e.keyCode] = false;
+    if (e.keyCode == 88){ //x
+        PLAYER.evaL = true;
+        console.log("True x");
+    }
+    if (e.keyCode == 67){
+        PLAYER.evaR = true;
+    }
 });
 
 window.addEventListener("keydown", function(e){ //note angle is countercllockwise
@@ -265,11 +296,20 @@ window.addEventListener("keydown", function(e){ //note angle is countercllockwis
    keys[e.keyCode] = true;
 });
 
-player.addEventListener( "click", bounce )
+player.addEventListener( "click", bounce );
 
-var soundless = document.getElementById("mute");
 soundless.addEventListener( "click", function(){
     mute = !mute;
-});
+    soundless.style.display = "none";
+    console.log("why");
+    yes = sounder.style.display = "initial";
+    console.log(yes);
+    });
+
+sounder.addEventListener( "click", function(){
+	mute = !mute;
+	soundless.style.display = "initial";
+	sounder.style.display = "none";
+    });
 
 init();
