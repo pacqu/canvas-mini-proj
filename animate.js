@@ -1,5 +1,8 @@
 var c = document.getElementById("playground");
 var ctx = c.getContext("2d");
+
+var lvl = document.getElementById("level");
+var pts = document.getElementById("points");
 var requestID;
 var ASTEROIDS;
 var BULLETS;
@@ -40,6 +43,7 @@ function init(){
     PLAYER.evaL = false;
     PLAYER.evaR = false;
     level = 0;
+    points = 0;
     //mute = false;
 };
     
@@ -107,7 +111,6 @@ function asteroid(size, asx, asy, v, angle) {
 		new asteroid(this.size,this.asx,this.asy,this.v,
 			     this.angle+(Math.random()*Math.PI)-(Math.PI/2)));
     }else{
-      console.log("asteroid popped");
       ASTEROIDS.splice(ASTEROIDS.indexOf(this),1);
     }	
   }
@@ -170,6 +173,7 @@ function ship(x,y){
 	}
         if (ASTEROIDS.length == 0){ 
             level+=1;
+            lvl.innerHTML = "Level: " + level;
             ASTEROIDS.push(
 		new asteroid(3, (this.x + c.width * Math.random() + c.width / 2) % c.width, (this.y + c.height * Math.random()+ c.height / 2) % c.height, 
                             (Math.random() * 10) % 2 + level, (Math.random()*Math.PI*2)) );
@@ -242,9 +246,8 @@ function bullet(x,y,v,angle){
             if ( (this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey) < (er+this.r)*(er+this.r) ){
               ASTEROIDS[i].split();
               this.hit = true;
-              if (this.hit){
-                  console.log("hitted");
-              }
+              points += 10;
+              pts.innerHTML = "Points: " + points;
               break;
             }
         }
