@@ -4,6 +4,7 @@ var requestID;
 var ASTEROIDS;
 var BULLETS;
 var level;
+var points;
 var mute;
 
 var LASER = new Audio("laser.wav"); // buffers automatically when created
@@ -26,9 +27,9 @@ function init(){
     PLAYER = new ship(500,250);
 
     //change this to true random l8r
-    ASTEROIDS.push(new asteroid(3, 100 + Math.random()*100, 100 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
-    ASTEROIDS.push(new asteroid(3, 400 + Math.random()*100, 70 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
-    ASTEROIDS.push(new asteroid(3, 800 + Math.random()*100, 300 + Math.random()*100, 1 + Math.random(), Math.random()*2*Math.PI));
+    ASTEROIDS.push(new asteroid(3, Math.random()*c.width, Math.random()*c.height, 1 + Math.random(), Math.random()*2*Math.PI));
+    ASTEROIDS.push(new asteroid(3, Math.random()*c.width, Math.random()*c.height, 1 + Math.random(), Math.random()*2*Math.PI));
+    ASTEROIDS.push(new asteroid(3, Math.random()*c.width, Math.random()*c.height, 1 + Math.random(), Math.random()*2*Math.PI));
     
     PLAYER.alive = true;
     PLAYER.v = 0;
@@ -37,7 +38,7 @@ function init(){
     PLAYER.y = 250;
     PLAYER.invinc = 64;
     level = 0;
-    mute = false;
+    //mute = false;
 };
     
 var desist = function HALT(){
