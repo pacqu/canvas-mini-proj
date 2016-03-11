@@ -19,7 +19,7 @@ var stop = document.getElementById("stop");
 var keys;
 
 function init(){
-    desist;
+    halt();
 
 //    ctx.clearRect( 0, 0, c.width, c.height );
 //    ctx.drawImage(back,0,0,1000,500);
@@ -47,13 +47,17 @@ function init(){
     //mute = false;
 };
     
-var desist = function HALT(){
+function halt(){
     window.cancelAnimationFrame( requestID );
     player.style.display = "initial";
     stop.style.display = "none";
-}    
+};    
 
-stop.addEventListener( "click", desist);
+stop.addEventListener( "click", function(){
+	window.cancelAnimationFrame( requestID );
+	player.style.display = "initial";
+	stop.style.display = "none";
+    } );
 
 var shp = new Image();
 shp.src = "galaga-ship.gif";
@@ -91,6 +95,7 @@ function asteroid(size, asx, asy, v, angle) {
       ctx.drawImage(aster, this.asx-(this.size*15), this.asy-(this.size*15), this.size * 30, this.size * 30);
       ctx.closePath();
     }
+
     this.move = function(){
       if( this.asx > c.width )
         this.asx = 0; 
@@ -165,9 +170,14 @@ function ship(x,y){
 		var ey = ASTEROIDS[i].asy;
 		var er = ASTEROIDS[i].size*10;
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive && this.invinc < 1){
-		    alert("You died. HAHA");
-		    this.alive = false; 
-                    init();                		    
+		    //alert("You Died! Play Again?");
+		    this.alive = false;
+		    ctx.clearRect( 0, 0, c.width, c.height );
+		    ctx.drawImage(back,0,0,1000,500);
+		    ctx.fontStyle = "100px sans serif";
+		    ctx.fillText("You Died!", 350, 275);
+		    window.cancelAnimationFrame( requestID );
+		    return;
 		}
 	    }
 	}
