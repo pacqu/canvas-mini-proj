@@ -223,7 +223,7 @@ function ship(x,y){
         if (this.cooldown <= 0 && this.alive){
 	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
             //console.log("x is "+this.x);
-            this.cooldown = 30;
+            this.cooldown = 15;
             if(!mute){
 		LASER.play();
 	    }
