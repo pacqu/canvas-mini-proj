@@ -9,6 +9,7 @@ var BULLETS;
 var level;
 var points;
 var mute;
+var pause = false;
 
 var LASER = new Audio("laser.wav"); // buffers automatically when created
 
@@ -20,9 +21,6 @@ var keys;
 
 function init(){
     halt();
-
-//    ctx.clearRect( 0, 0, c.width, c.height );
-//    ctx.drawImage(back,0,0,1000,500);
 
     keys = [];
     ASTEROIDS = new Array();
@@ -79,6 +77,13 @@ back.onload = function(){
 
 var laser = new Image();
 laser.src = "laser.png";
+var missile = new Image();
+missile.src = "missile.png";
+var shrapnel = new Image();
+shrapnel.src = "shrapnel.png";
+
+//shrapnel.setAttribute('height', 30);
+//shrapnel.setAttribute('width', 30);
 
 var soundless = document.getElementById("mute");
 var sounder = document.getElementById("unmute");
@@ -124,6 +129,10 @@ function asteroid(size, asx, asy, v, angle) {
 var i;
 function ship(x,y){
     this.invinc = 64;
+    this.MissReload = 120;
+    this.reload = 15;
+    this.ShrapReload = 60;
+    this.ShrapCooldown = 0;
     this.x = x;
     this.y = y;
     this.angle = 0;
@@ -131,23 +140,28 @@ function ship(x,y){
     this.reloaded = true;
     this.v=0;
     this.cooldown = 0;
+    this.MissCooldown = 0;
     this.r = 10;
     this.evaL = false;
     this.evaR = false;
         
     this.move = function(){
      
-        if ( keys[39] ){
+        if ( keys[39] || keys[68] ){
             this.angle += .085; //right //radians
-        } if ( keys[38] ){ //up
+        } if ( keys[38] || keys[87] ){ //up
             this.v += .05;
-        } if ( keys[37] ){
+        } if ( keys[37] || keys[65] ){
             this.angle -= .085;
-        } if ( keys[40] ){
+        } if ( keys[40] || keys[83] ){
             this.v -= .05;
-        } if ( keys[70] || keys[32]){ //f or space
+        } if ( keys[75] || keys[32]){ //k or space
             this.shoot(ctx);
-        }
+        } if ( keys[76] || keys[32]){ // L
+	    this.missile(ctx);
+	} if ( keys[32] || keys[74]){ // space
+	    this.shrapnel(ctx);
+	}
 
 	this.x += Math.cos(this.angle)*this.v;
 	this.y += Math.sin(this.angle)*this.v;
@@ -173,7 +187,7 @@ function ship(x,y){
 		    //alert("You Died! Play Again?");
 		    this.alive = false;
 		}
-        }
+             }
 	}
         if (ASTEROIDS.length == 0){ 
             level+=1;
@@ -200,19 +214,25 @@ function ship(x,y){
 	}
         if (this.alive && (this.evaL || this.evaR)){
             if (this.evaL == true){
-                this.x += 50*Math.sin(this.angle);
-                this.y -= 50*Math.cos(this.angle);
+                this.x += 75*Math.sin(this.angle);
+                this.y -= 75*Math.cos(this.angle);
                 console.log(this.x);
                 this.evaL = false;
             }
             if (this.evaR == true){
-                this.y += 100*Math.cos(this.angle);
-                this.x -= 100*Math.sin(this.angle);
+                this.y += 75*Math.cos(this.angle);
+                this.x -= 75*Math.sin(this.angle);
                 this.evaR = false;
             }
         }	
         if (this.cooldown > 0){
             this.cooldown--;
+        }
+        if (this.MissCooldown > 0){
+            this.MissCooldown--;
+        }
+        if (this.ShrapCooldown > 0){
+            this.ShrapCooldown--;
         }
         if (this.invinc > 0){
             this.invinc--;
@@ -221,24 +241,61 @@ function ship(x,y){
 
     this.shoot = function(){
         if (this.cooldown <= 0 && this.alive){
-	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle));
+	    BULLETS.push(new bullet(this.x,this.y,this.v+5,this.angle, 1));
             //console.log("x is "+this.x);
-            this.cooldown = 15;
+            this.cooldown = this.reload;
             if(!mute){
 		LASER.play();
 	    }
 
         }
     };
+    this.missile = function(){
+        if (this.MissCooldown <= 0 && this.alive){
+	    BULLETS.push(new bullet(this.x+Math.sin(this.angle)*3,this.y-Math.cos(this.angle)*3,2*(this.v+5),this.angle,2)); //right one
+	    BULLETS.push(new bullet(this.x+Math.sin(this.angle)*25,this.y-Math.cos(this.angle)*25,2*(this.v+5),this.angle,2));
+	    //console.log(this.x+Math.sin(this.angle)*25);
+            this.MissCooldown = this.MissReload;
+            if(!mute){
+		LASER.play();
+	    }
+	    console.log("fired missile");
+
+        }
+    };
+    this.shrapnel = function(){
+	if (this.ShrapCooldown <= 0 && this.alive){
+	    for (this.a = 0; this.a < 50; this.a++){
+		BULLETS.push(new bullet(this.x,this.y,(this.v+5),this.angle+Math.random()*2*Math.PI,1)); //right one
+	    }
+	    this.ShrapCooldown = this.ShrapReload;
+            if(!mute){
+		LASER.play();
+	    }
+        }
+    }
+    this.status = function(){
+	console.log("status");	
+	ctx.fillStyle="#FF0000";
+	
+	ctx.drawImage(missile,c.width-60,c.height-55);
+	ctx.fillRect(c.width-60, c.height-10,50,-40*(this.MissCooldown/this.MissReload));
+	
+	ctx.drawImage(laser, c.width-90,c.height-40);
+ 	ctx.fillRect(c.width-100,c.height-10,50,-40*(this.cooldown/this.reload));
+	
+	ctx.drawImage(shrapnel, c.width-150, c.height-50, 40, 40);
+	ctx.fillRect(c.width-150, c.height-10,50,-40*(this.ShrapCooldown/this.ShrapReload));	
+    }
 };
 
-function bullet(x,y,v,angle){
+function bullet(x,y,v,angle,type){
     this.x = x;
     this.y = y;
     this.v = v+level;
     this.angle = angle;
     this.r = 5;
-    console.log(this.x+ " " + x);
+    this.type = type;
     this.hit = false;
 
     this.move = function(){
@@ -260,16 +317,21 @@ function bullet(x,y,v,angle){
 	ctx.save();
 	ctx.translate(this.x,this.y);
 	ctx.rotate(this.angle);
-	ctx.drawImage(laser,-laser.width/2,-laser.width/2);
+	if (this.type == 1){
+	    ctx.drawImage(laser,-laser.width/2,-laser.width/2);
+	} else if (this.type == 2){
+	    ctx.drawImage(missile,-laser.width/2,-laser.width/2);
+	    //console.log(-missile.width/2);
+	}
 	ctx.restore();
-	ctx.closePath();
-        
+	ctx.closePath(); 
     };
 }
 
 var bounce = function(){
     ctx.clearRect( 0, 0, c.width, c.height );
     ctx.drawImage(back,0,0,1000,500);
+    PLAYER.status();
     if( !PLAYER.alive ){
         ctx.clearRect( 0, 0, c.width, c.height );
         ctx.drawImage(back,0,0,1000,500);
@@ -286,11 +348,18 @@ var bounce = function(){
     }
     PLAYER.move(ctx);
     for ( i = 0; i<BULLETS.length; i++){
-        if (BULLETS[i].bx > c.width || BULLETS[i].by > c.height || 
-            BULLETS[i].bx < 0 || BULLETS[i].by < 0 || BULLETS[i].hit ){
+        if (BULLETS[i].x > c.width || BULLETS[i].y > c.height || 
+            BULLETS[i].x < 0 || BULLETS[i].y < 0 || BULLETS[i].hit ){
+            if ( BULLETS[i].hit && BULLETS[i].type == 2 ){
+		for (this.a = 0; this.a < 5; this.a++){
+		    BULLETS.push( new bullet(BULLETS[i].x, BULLETS[i].y, BULLETS[i].v/2, BULLETS[i].angle+Math.random()*Math.PI/4, BULLETS[i].type-1) );
+		    BULLETS.push( new bullet(BULLETS[i].x, BULLETS[i].y, BULLETS[i].v/2, BULLETS[i].angle-Math.random()*Math.PI/4, BULLETS[i].type-1) );
+		}
+	    }
             BULLETS.splice(i,1);
+	    //bounce();
         } else {
-            BULLETS[i].move(ctx);
+	    BULLETS[i].move(ctx);
         }
     }
     requestID = window.requestAnimationFrame( bounce );
@@ -300,11 +369,11 @@ var bounce = function(){
 
 window.addEventListener("keyup", function(e){ //note angle is countercllockwise
     keys[e.keyCode] = false;
-    if (e.keyCode == 88){ //x
+    if (e.keyCode == 88 || e.keyCode == 73){ //x
         PLAYER.evaL = true;
         console.log("True x");
     }
-    if (e.keyCode == 67){
+    if (e.keyCode == 67 || e.keyCode == 79){
         PLAYER.evaR = true;
     }
     if (e.keyCode == 13){
@@ -314,7 +383,17 @@ window.addEventListener("keyup", function(e){ //note angle is countercllockwise
 });
 
 window.addEventListener("keydown", function(e){ //note angle is countercllockwise
+   e.preventDefault();
+
    //e.keyCode; 39 == right; 38 == up; 37 == left; 40 == down
+   if (e.keyCode == 80){ // p
+	pause = !pause;
+	if (pause){
+	    window.cancelAnimationFrame( requestID );
+	} else {
+	    window.requestAnimationFrame( bounce );
+	}
+   }
    keys[e.keyCode] = true;
 });
 
@@ -335,3 +414,4 @@ sounder.addEventListener( "click", function(){
     });
 
 init();
+mute = !mute;
