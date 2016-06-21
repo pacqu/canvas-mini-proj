@@ -167,9 +167,9 @@ function ship(x,y){
 
 	this.x += Math.cos(this.angle)*this.v;
 	this.y += Math.sin(this.angle)*this.v;
-	if (this.v>5){
+	if (this.v>5+level/2){
 	    this.v=5;
-	} if (this.v<-5){
+	} if (this.v<-5-level/2){
             this.v=-5;
         } if (this.x<0){
 	    this.x = c.width;
@@ -295,7 +295,7 @@ function ship(x,y){
 	ctx.fillRect(c.width-150, c.height-10,50,-40*(this.ShrapCooldown/this.ShrapReload));	
 	
 	for (this.a = 0; this.a < this.lives; this.a++){
-	    ctx.drawImage(shp, 10+50*this.a, c.height-50);
+	    ctx.drawImage(shp, 20+50*this.a, c.height-40, 30, 30);
 	}
     }
 };
