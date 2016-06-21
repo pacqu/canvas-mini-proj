@@ -33,6 +33,7 @@ function init(){
     ASTEROIDS.push(new asteroid(3, Math.random()*c.width, Math.random()*c.height, 1 + Math.random(), Math.random()*2*Math.PI));
     
     PLAYER.alive = true;
+    PLAYER.lives = 3;
     PLAYER.v = 0;
     PLAYER.angle = 0;
     PLAYER.x = 500;
@@ -137,6 +138,7 @@ function ship(x,y){
     this.y = y;
     this.angle = 0;
     this.alive = true;
+    this.lives = 3;
     this.reloaded = true;
     this.v=0;
     this.cooldown = 0;
@@ -185,7 +187,12 @@ function ship(x,y){
 		var er = ASTEROIDS[i].size*10;
 		if ( ((this.x-ex)*(this.x-ex) + (this.y-ey)*(this.y-ey)) < (er+this.r)*(er+this.r) && this.alive && this.invinc < 1){
 		    //alert("You Died! Play Again?");
-		    this.alive = false;
+		    //this.alive = false;
+		    this.lives--;
+		    this.invinc = 64;
+		    if (this.lives<=0){
+			this.alive = false;	
+		    }
 		}
              }
 	}
@@ -286,6 +293,10 @@ function ship(x,y){
 	
 	ctx.drawImage(shrapnel, c.width-150, c.height-50, 40, 40);
 	ctx.fillRect(c.width-150, c.height-10,50,-40*(this.ShrapCooldown/this.ShrapReload));	
+	
+	for (this.a = 0; this.a < this.lives; this.a++){
+	    ctx.drawImage(shp, 10+50*this.a, c.height-50);
+	}
     }
 };
 
